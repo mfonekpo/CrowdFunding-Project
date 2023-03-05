@@ -4,8 +4,9 @@ import { useContract, useContractWrite, useContractRead } from '@thirdweb-dev/re
 import React, { useState, useEffect } from 'react';
 import "./styles/Home.css";
 import {ethers} from 'ethers';
-// import { useLazyMint } from '@thirdweb-dev/react';
-const contractAddress = "0x602007e0b0Cd6bfB41E0D03e5a6e780EbD4eB1A2";
+import { Indexed } from 'ethers/lib/utils';
+import { useLazyMint } from '@thirdweb-dev/react';
+const contractAddress = "0x877E3Ba57c79eC457702d9cfa7A1C1D45178efc2";
 
 
 
@@ -13,19 +14,22 @@ export default function Home() {
 
   const {contract} = useContract(contractAddress);
 
-  const  {data: Readinfo} = useContractRead(contract, "contributions")
+  const  {data: Readinfo} = useContractRead(contract, "getListofCampaigns")
 
   const {mutateAsync: Create_Fundme} = useContractWrite(contract, "createCampaign");
   const {mutateAsync: donate} = useContractWrite(contract, "contribute");
   const {mutateAsync: withdrawFunds} = useContractWrite(contract, "withdraw");
-  const {mutateAsync: deleteCampaign} = useContractWrite(contract, "deleteCampaign");
+
 
 
 
   const [title, setTitle] = useState("");
   const [amountNeeded, setamountNeeded] = useState(0);
-  // const [contributions, setContributions] = useState([]);
   const [deadline, setDeadline] = useState(0);
+  // const [campaigns, setcampaigns] = useState([]);
+
+
+  // const [contributions, setContributions] = useState([]);
 
 
   // useEffect(() => {
@@ -68,7 +72,7 @@ export default function Home() {
 
   const CreateFundme = () =>{
     Create_Fundme([title, amountNeeded, deadline]);
-    console.log(Readinfo(0x3b0ea55b30337Ce8a0b85b8f4542d0d9fcFDB487));
+    // console.log(Readinfo);
   }
 
 
@@ -76,13 +80,6 @@ export default function Home() {
   const Donate = () =>{
     donate();
   }
-
-
-
-  const Delete = () =>{
-    deleteCampaign();
-  }
-
 
 
   const withdraw = () =>{
@@ -113,14 +110,11 @@ export default function Home() {
   //   setContributions(event.target.value);
   // }
 
-  const deletehandleChange = (event) =>{
-
-  }
 
   return (
     <div className="container">
       <main className="main">
-      <Navbar />
+        <Navbar />
         <h1 className="title">
           Fundme
         </h1>
@@ -148,18 +142,21 @@ export default function Home() {
             <button onClick={Donate}>Donate</button>
           </div> */}
 
-          <div  className="card">
-            <h2>Delete A Fundme &rarr;</h2>
-            <input type="text" onChange={deletehandleChange} placeholder='input address'/>
-            <button onClick={Delete}>Delete</button>
-          </div>
-
 
           <div  className="card">
-            <h3></h3>
-            <h3></h3>
-            <h3></h3>
-            <h3></h3>
+
+                {Readinfo && Readinfo.map((camp) => (
+
+                    <>
+                    <h3>Campaign Title {camp.title}</h3>
+                    <h3>Amount Needed {parseInt(camp.amountNeeded._hex)}</h3>
+                    <h3>Amount Raised {parseInt(camp.amountRaised._hex)}</h3>
+                    <h3>Deadline {parseInt(camp.deadline._hex)} days</h3>
+                    </>
+
+                ))}
+
+
           </div>
 
 
