@@ -6,88 +6,52 @@ import "./styles/Home.css";
 import {ethers} from 'ethers';
 import { Indexed } from 'ethers/lib/utils';
 import { useLazyMint } from '@thirdweb-dev/react';
+
+// define the contract address for the FundMe smart contract
 const contractAddress = "0x877E3Ba57c79eC457702d9cfa7A1C1D45178efc2";
 
 
 
+// define the Home component
 export default function Home() {
 
+  // use the custom hook to retrieve the contract instance
   const {contract} = useContract(contractAddress);
 
+  // use the custom hook to retrieve the list of campaigns from the contract
   const  {data: Readinfo} = useContractRead(contract, "getListofCampaigns")
-
-  const {mutateAsync: Create_Fundme} = useContractWrite(contract, "createCampaign");
-  const {mutateAsync: donate} = useContractWrite(contract, "contribute");
-  const {mutateAsync: withdrawFunds} = useContractWrite(contract, "withdraw");
-
-
-
-
+  
+  // define state variables to store user inputs for creating a campaign and donating to a campaign
+  const [contributions, setContributions] = useState(0);
   const [title, setTitle] = useState("");
   const [amountNeeded, setamountNeeded] = useState(0);
   const [deadline, setDeadline] = useState(0);
-  // const [campaigns, setcampaigns] = useState([]);
 
+  // use the custom hook to create a new campaign in the contract
+  const {mutateAsync: Create_Fundme} = useContractWrite(contract, "createCampaign");
 
-  // const [contributions, setContributions] = useState([]);
-
-
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     const goal = await crowdfunding.methods.goal().call();
-  //     const raised = await crowdfunding.methods.raised().call();
-  //     const count = await crowdfunding.methods.contributorsCount().call();
-  //     const contributions = [];
-  //     for (let i = 0; i < count; i++) {
-  //       const contributor = await crowdfunding.methods.contributors(i).call();
-  //       contributions.push(contributor);
-  //     }
-  //     setGoal(goal);
-  //     setRaised(raised);
-  //     setContributions(contributions);
-  //   }
-  //   fetchData();
-  // }, []);
-
-  // async function contribute() {
-  //   setMessage('Waiting for transaction to complete...');
-  //   const accounts = await web3.eth.getAccounts();
-  //   await crowdfunding.methods.contribute().send({
-  //     from: accounts[0],
-  //     value: web3.utils.toWei(value, 'ether')
-  //   });
-  //   setMessage('Contribution successful!');
-  // }
-
-  // async function withdraw() {
-  //   setMessage('Waiting for transaction to complete...');
-  //   const accounts = await web3.eth.getAccounts();
-  //   await crowdfunding.methods.withdraw().send({
-  //     from: accounts[0]
-  //   });
-  //   setMessage('Withdrawal successful!');
-  // }
+  // use the custom hook to donate to an existing campaign in the contract
+  const {mutateAsync: donate} = useContractWrite(contract, "contribute");
 
 
 
+
+
+
+
+  // define the function to create a new campaign
   const CreateFundme = () =>{
     Create_Fundme([title, amountNeeded, deadline]);
-    // console.log(Readinfo);
   }
 
 
-
+  // define the function to donate to an existing campaign
   const Donate = () =>{
-    donate();
+    donate({value: ethers.utils.parseEther(contributions)});
   }
 
 
-  const withdraw = () =>{
-    withdrawFunds();
-  }
-
-
-
+  // define event handlers to update the state variables for the user inputs
   const TitlehandleChange = (event) =>{
     setTitle(event.target.value);
   }
@@ -106,11 +70,12 @@ export default function Home() {
 
   // }
 
-  // const contributehandleChange = (event) =>{
-  //   setContributions(event.target.value);
-  // }
+  const contributehandleChange = (event) =>{
+    setContributions(event.target.value);
+  }
 
 
+    // render the Home component
   return (
     <div className="container">
       <main className="main">
@@ -120,51 +85,37 @@ export default function Home() {
         </h1>
 
 
-        {/* <div className="connect">
-          <ConnectWallet />
-        </div> */}
 
         <div className="grid">
-          <div  className="card">
-
+          <div  className="card" style={{width : 800}}>
             <h2>Create a Fundme &rarr;</h2>
-            <input type="text" onChange={TitlehandleChange} placeholder='Title of project'/>
-            <input type="text" step={0.01}  onChange={NeededhandleChange} placeholder='Ether needed(Eth)'/>
-            <input type="text" onChange={DeadlinehandleChange} placeholder='Deadline'/>
-            {/* <input type="text" onChange={RaisedhandleChange} placeholder='Ether Raised'/> */}
+            <input type="text" required onChange={TitlehandleChange} placeholder='Title of project'/>
+            <input type="text" required step={0.01}  onChange={NeededhandleChange} placeholder='Ether needed(Eth)'/>
+            <input type="text" required onChange={DeadlinehandleChange} placeholder='Deadline'/>
             <button onClick = {CreateFundme}>Create</button>
 
           </div>
 
-          {/* <div  className="card">
-            <h2>Contribute &rarr;</h2>
-            <input step={0.01} type="number" onChange={contributehandleChange} placeholder='Donate to a cauze'/>
-            <button onClick={Donate}>Donate</button>
-          </div> */}
 
-
-          <div  className="card">
-
-                {Readinfo && Readinfo.map((camp) => (
-
+          <div  className="cardbox">
+            <ol>
+                {Readinfo && Readinfo.map((camp, index) => (
+                  <li key={index}>
                     <>
-                    <h3>Campaign Title {camp.title}</h3>
-                    <h3>Amount Needed {parseInt(camp.amountNeeded._hex)}</h3>
-                    <h3>Amount Raised {parseInt(camp.amountRaised._hex)}</h3>
-                    <h3>Deadline {parseInt(camp.deadline._hex)} days</h3>
+                    <div className='box'>
+                      <h3>Campaign Title: {camp.title}</h3>
+                      <h3>Amount Needed: {parseInt(camp.amountNeeded._hex)} Eth</h3>
+                      <h3>Amount Raised: {parseInt(camp.amountRaised._hex)} Eth</h3>
+                      <h3>Deadline: {parseInt(camp.deadline._hex)} days</h3>
+                      <input className='donate' step={0.01} type="number" onChange={contributehandleChange}  placeholder='Enter amount to Donate'></input>
+                      <button id='donate' onClick={Donate}>Donate</button>
+                    </div>
                     </>
-
+                  </li>
                 ))}
-
+            </ol>
 
           </div>
-
-
-          <div  className="card">
-            <button onClick={withdraw}>Withdraw</button>
-          </div>
-
-
 
         </div>
       </main>
