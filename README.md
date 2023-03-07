@@ -1,5 +1,5 @@
 ## Crowdfunding Project
-This is a decentralized crowdfunding project built on the Ethereum blockchain. It allows users to create and fund campaigns, and for campaign creators to withdraw funds once their campaign has been successfully funded.
+This is a decentralized crowdfunding project built on the Ethereum blockchain. It allows users to create and fund campaigns and donate to campaign of interest.
 
 
 
@@ -69,6 +69,19 @@ You can interact with the contract using the methods provided by the StateContex
 - __Ethereum -__ _A decentralized platform that runs smart contracts_
 - __ethers.js -__ _A library for interacting with the Ethereum blockchain_
 - __@thirdweb-dev/react -__ _A set of hooks for interacting with Ethereum contracts_
+
+
+## Site Snapshot
+![Alt text](../../../../Pictures/cheeekz.png)
+
+## Project Link
+[Fundme](https://xupport.netlify.app/)
+
+
+
+## Features
+- Create a new crowdfund project on our platform and get zupport from all over the world.
+- Seen any fundme project that is worth your fund? you can support them by donating to a course. 
 
 
 ## Contributing

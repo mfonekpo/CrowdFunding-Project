@@ -101,16 +101,20 @@ export default function Home() {
             <ol>
                 {Readinfo && Readinfo.map((camp, index) => (
                   <li key={index}>
+                  
                     <>
                     <div className='box'>
                       <h3>Campaign Title: {camp.title}</h3>
                       <h3>Amount Needed: {parseInt(camp.amountNeeded._hex)} Eth</h3>
                       <h3>Amount Raised: {parseInt(camp.amountRaised._hex)} Eth</h3>
                       <h3>Deadline: {parseInt(camp.deadline._hex)} days</h3>
-                      <input className='donate' step={0.01} type="number" onChange={contributehandleChange}  placeholder='Enter amount to Donate'></input>
+
+                      <input className='donate' step={0.01} type="number" onChange={
+                        contributehandleChange}  placeholder='Enter amount to Donate'></input>
                       <button id='donate' onClick={Donate}>Donate</button>
                     </div>
                     </>
+                    {/* {console.log("index:", index+1)} */}
                   </li>
                 ))}
             </ol>
