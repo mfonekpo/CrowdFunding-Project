@@ -36,10 +36,6 @@ cd client
 npm run dev
 ```
 
-## Site Link
-[Fundeme](https://fundz.netlify.app/)
-
-
 
 ## Usage
 
@@ -71,8 +67,12 @@ You can interact with the contract using the methods provided by the StateContex
 - __@thirdweb-dev/react -__ _A set of hooks for interacting with Ethereum contracts_
 
 
+
+
 ## Site Snapshot
 ![cheeekz](https://user-images.githubusercontent.com/58835748/223295015-002c77f7-1a3c-4ea9-80cc-f3fd0058727b.png)
+
+
 
 
 ## Project Link
