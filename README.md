@@ -72,7 +72,8 @@ You can interact with the contract using the methods provided by the StateContex
 
 
 ## Site Snapshot
-![Alt text](../../../../Pictures/cheeekz.png)
+![cheeekz](https://user-images.githubusercontent.com/58835748/223295015-002c77f7-1a3c-4ea9-80cc-f3fd0058727b.png)
+
 
 ## Project Link
 [Fundme](https://xupport.netlify.app/)
