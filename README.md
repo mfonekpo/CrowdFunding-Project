@@ -37,7 +37,7 @@ npm run dev
 ```
 
 ## Site Link
-[Fundme](https://fundz.netlify.app/)
+[Fundme](https://xenme.netlify.app/)
 
 
 
