@@ -37,7 +37,7 @@ npm run dev
 ```
 
 ## Site Link
-[Fundeme](https://fundz.netlify.app/)
+[Fundme](https://fundz.netlify.app/)
 
 
 
@@ -56,9 +56,9 @@ __Goerli Testnet Network__
 
 ## Smart Contract
 
-The smart contract for this project is deployed on the Ethereum blockchain Goerli testnet on the address making use of thirdweb '0x877E3Ba57c79eC457702d9cfa7A1C1D45178efc2'. The contract has been audited and is safe to use.
+The smart contract for this project is deployed on the Ethereum blockchain Goerli testnet on the address making use of thirdweb '0x877E3Ba57c79eC45770*****'. The contract has been audited and is safe to use.
 
-You can interact with the contract using the methods provided by the StateContextProvider and useStateContext hooks in the project.
+
 
 
 
