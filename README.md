@@ -75,7 +75,7 @@ You can interact with the contract using the methods provided by the StateContex
 ![Alt text](../../../../Pictures/cheeekz.png)
 
 ## Project Link
-[Fundme](https://xupport.netlify.app/)
+[Fundme](https://xenme.netlify.app/)
 
 
 

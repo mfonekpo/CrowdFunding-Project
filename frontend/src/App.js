@@ -4,16 +4,22 @@ import { useContract, useContractWrite, useContractRead } from '@thirdweb-dev/re
 import React, { useState, useEffect } from 'react';
 import "./styles/Home.css";
 import {ethers} from 'ethers';
+// import Withdraw from '../../../../crowdProject/Crowdfunding/client/src/components/withdraw';
 // import { Indexed } from 'ethers/lib/utils';
 // import { useLazyMint } from '@thirdweb-dev/react';
 
 // define the contract address for the FundMe smart contract
-const contractAddress = "0xDf560d9090DfD74087A3a923E1B1DfCCbFA1CC36"
+// const contractAddress = "0xDf560d9090DfD74087A3a923E1B1DfCCbFA1CC36"
+const contractAddress = "0x735884465c2b42dfA6fE98EFbCfE88dE8f3D397A";
+
+
 
 
 
 // define the Home component
 export default function Home() {
+  const currentDate = new Date();
+  // console.log(currentDate);
 
   // use the custom hook to retrieve the contract instance
   const {contract} = useContract(contractAddress);
@@ -32,6 +38,8 @@ export default function Home() {
 
   // use the custom hook to donate to an existing campaign in the contract
   const {mutateAsync: donate} = useContractWrite(contract, "contribute");
+
+  const {mutateAsync: claim} = useContractWrite(contract, "withdrawFunds")
 
 
 
@@ -63,14 +71,30 @@ export default function Home() {
 
 
 
+  //define a function to withdraw fundz
+  const Claim = async (event, id) =>{
+    event.preventDefault();
+    try{
+      await claim([id])
+
+    }
+    catch(error){
+      alert(`Error: ${error.message}`);
+    }
+  }
+
+
+
   // define event handlers to update the state variables for the user inputs
   const TitlehandleChange = (event) =>{
     setTitle(event.target.value);
   }
 
+
   const NeededhandleChange = (event) =>{
     setamountNeeded(event.target.value);
   }
+
 
   const DeadlinehandleChange = (event) =>{
     setDeadline(event.target.value);
@@ -95,7 +119,7 @@ export default function Home() {
 
 
         <div className="grid">
-          <div  className="card" style={{width : 800}}>
+          <div  className="card" style={{idth : 800}}>
             <h2>Create a Fundme &rarr;</h2>
             <input type="text" required onChange={TitlehandleChange} placeholder='Title of project'/>
             <input type="text" required step={0.01}  onChange={NeededhandleChange} placeholder='Ether needed(Eth)'/>
@@ -115,15 +139,17 @@ export default function Home() {
                       <h3>Campaign Title: {camp.title}</h3>
                       <h3>Amount Needed: {parseInt(camp.amountNeeded._hex)} Eth</h3>
                       <h3>Amount Raised: {parseInt(camp.amountRaised._hex)/(10**18)} Eth</h3>
+                      {/* <h3>Deadline: {new Date(camp.deadline).getTime() - Date.now() / (1000*3600*24)} days left</h3> */}
                       <h3>Deadline: {parseInt(camp.deadline._hex)} days left</h3>
+                      <button onClick={event => Claim(event, parseInt(camp.camp_id._hex))}>Withdraw</button>
 
                       <input className='donate' step={0.01} type="number" onChange={
                         contributehandleChange}  placeholder='Enter amount to Donate'></input>
                       <button id='donate' onClick={event => Donate(event, parseInt(camp.camp_id._hex))}>Donate</button>
                     </div>
                     </>
-                    {/* {console.log(typeof(parseInt(camp.camp_id._hex)))} */}
-                    {/* {console.log(parseInt(camp.deadline._hex))} */}
+                    {console.log(camp.deadline)}
+                    {console.log(typeof(camp.deadline))}
                   </li>
                 ))}
             </ol>

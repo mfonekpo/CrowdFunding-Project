@@ -134,4 +134,33 @@ contract FundMe {
     }
 
 
+    /**
+    * @dev Allows the owner of a campaign to withdraw the funds raised by the campaign, provided that the campaign has ended
+    * and the amount raised is equal to or greater than the target amount.
+    * @param _id The ID of the campaign for which funds are to be withdrawn.
+    */
+    function withdrawFunds(uint _id) external payable {
+        // Retrieve the campaign information from the Contributions mapping using the provided campaign ID.
+        campaignInfo storage c = Contributions[_id];
+
+        // Ensure that the caller of the function is the owner of the campaign.
+        require(c.owner == msg.sender, "Not owner");
+
+
+        // Ensure that the campaign has ended.
+        require(block.timestamp > c.deadline, "Campaign not ended yet");
+
+        // Ensure that the amount raised is equal to or greater than the target amount.
+        require(c.amountRaised >= c.amountNeeded, "Pledged amount less than target");
+
+        // Transfer the raised amount to the owner of the campaign.
+        // payable(c.owner).transfer(c.amountRaised);
+
+        (bool success, ) = payable(c.owner).call{value: c.amountRaised}("");
+        if(!success){
+            revert("Transacton failed");
+        }
+    }
+
+
 }
