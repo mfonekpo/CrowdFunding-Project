@@ -4,12 +4,9 @@ import { useContract, useContractWrite, useContractRead } from '@thirdweb-dev/re
 import React, { useState, useEffect } from 'react';
 import "./styles/Home.css";
 import {ethers} from 'ethers';
-// import Withdraw from '../../../../crowdProject/Crowdfunding/client/src/components/withdraw';
-// import { Indexed } from 'ethers/lib/utils';
-// import { useLazyMint } from '@thirdweb-dev/react';
 
 // define the contract address for the FundMe smart contract
-// const contractAddress = "0xDf560d9090DfD74087A3a923E1B1DfCCbFA1CC36"
+
 const contractAddress = "0x735884465c2b42dfA6fE98EFbCfE88dE8f3D397A";
 
 
@@ -19,10 +16,12 @@ const contractAddress = "0x735884465c2b42dfA6fE98EFbCfE88dE8f3D397A";
 // define the Home component
 export default function Home() {
   const currentDate = new Date();
-  // console.log(currentDate);
+
 
   // use the custom hook to retrieve the contract instance
   const {contract} = useContract(contractAddress);
+
+  const minDate = new Date().toISOString().slice(0, 10);
 
   // use the custom hook to retrieve the list of campaigns from the contract
   const  {data: Readinfo} = useContractRead(contract, "getListofCampaigns");
@@ -31,7 +30,7 @@ export default function Home() {
   const [contributions, setContributions] = useState(0);
   const [title, setTitle] = useState("");
   const [amountNeeded, setamountNeeded] = useState(0);
-  const [deadline, setDeadline] = useState(0);
+  const [deadline, setDeadline] = useState("");
 
   // use the custom hook to create a new campaign in the contract
   const {mutateAsync: Create_Fundme} = useContractWrite(contract, "createCampaign");
@@ -61,7 +60,7 @@ export default function Home() {
     try{
       event.preventDefault();
       await donate([id, {value: ethers.utils.parseEther(contributions)}]);
-      alert("Funds donted successfully") //notification when user donates to campaign
+      alert("Funds donated successfully") //notification when user donates to campaign
     }
     catch (error){
       console.log(error);
@@ -85,6 +84,7 @@ export default function Home() {
 
 
 
+
   // define event handlers to update the state variables for the user inputs
   const TitlehandleChange = (event) =>{
     setTitle(event.target.value);
@@ -95,9 +95,12 @@ export default function Home() {
     setamountNeeded(event.target.value);
   }
 
-
+  // This event handles the time conversion to unix time so as to populate the struct on the smart contract
   const DeadlinehandleChange = (event) =>{
-    setDeadline(event.target.value);
+    const deadlineDate = new Date(event.target.value);
+    const diffTime = Math.abs(deadlineDate - currentDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    setDeadline(diffDays);
   }
 
 
@@ -123,7 +126,7 @@ export default function Home() {
             <h2>Create a Fundme &rarr;</h2>
             <input type="text" required onChange={TitlehandleChange} placeholder='Title of project'/>
             <input type="text" required step={0.01}  onChange={NeededhandleChange} placeholder='Ether needed(Eth)'/>
-            <input type="text" required onChange={DeadlinehandleChange} placeholder='Deadline'/>
+            <input type="date" required onChange={DeadlinehandleChange} placeholder='Deadline' min={minDate}/>
             <button onClick = {CreateFundme}>Create</button>
 
           </div>
